@@ -97,13 +97,23 @@ public:
         return !coroutine_ || coroutine_.done();
     }
 
-    void join()
+    T join()
     {
         static_assert(Joinable,
                       "Cannot join a task without the Joinable type "
                       "parameter "
                       "set");
         coroutine_.promise().join_sem.acquire();
+        if constexpr (std::is_same_v<T, void>)
+        {
+            coroutine_.destroy();
+        }
+        else
+        {
+            auto t = std::move(coroutine_.promise().data);
+            coroutine_.destroy();
+            return t;
+        }
     }
 
     // When suspending from a coroutine *within* this task's coroutine, save

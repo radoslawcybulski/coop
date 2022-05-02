@@ -4,6 +4,8 @@
 #include <atomic>
 #include <semaphore>
 #include <thread>
+#include <iostream>
+
 #if defined(__clang__)
 #    include <experimental/coroutine>
 namespace std
@@ -85,7 +87,6 @@ namespace detail
         void await_suspend(std::coroutine_handle<P> coroutine) const noexcept
         {
             coroutine.promise().join_sem.release();
-            coroutine.destroy();
         }
     };
 
@@ -157,7 +158,7 @@ namespace detail
     template <typename Task, typename T, bool Joinable>
     struct promise_t : public promise_base_t<Joinable>
     {
-        T data;
+        T data = {};
 
         Task get_return_object() noexcept
         {
