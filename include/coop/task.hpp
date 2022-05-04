@@ -164,7 +164,7 @@ inline auto suspend(S& scheduler                             = S::instance(),
 {
     struct awaiter_t
     {
-        scheduler_t& scheduler;
+        S& scheduler;
         uint64_t cpu_mask;
         uint32_t priority;
         source_location_t source_location;
