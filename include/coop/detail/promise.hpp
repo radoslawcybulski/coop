@@ -5,6 +5,7 @@
 #include <semaphore>
 #include <thread>
 #include <iostream>
+#include <optional>
 
 #if defined(__clang__)
 #    include <experimental/coroutine>
@@ -158,7 +159,7 @@ namespace detail
     template <typename Task, typename T, bool Joinable>
     struct promise_t : public promise_base_t<Joinable>
     {
-        T data = {};
+        std::optional<T> data = {};
 
         Task get_return_object() noexcept
         {

@@ -75,14 +75,16 @@ public:
     {
         static_assert(
             !std::is_same_v<T, void>, "This task doesn't contain any data");
-        return std::ref(promise().data);
+        assert(promise().data);
+        return std::ref(*promise().data);
     }
 
     [[nodiscard]] auto operator*() const noexcept
     {
         static_assert(
             !std::is_same_v<T, void>, "This task doesn't contain any data");
-        return std::cref(promise().data);
+        assert(promise().data);
+        return std::cref(*promise().data);
     }
 
     // A task_t is truthy if it is not associated with an outstanding
@@ -110,7 +112,8 @@ public:
         }
         else
         {
-            auto t = std::move(coroutine_.promise().data);
+            assert(promise().data);
+            auto t = std::move(*coroutine_.promise().data);
             coroutine_.destroy();
             return t;
         }
@@ -133,7 +136,8 @@ public:
         }
         else
         {
-            return std::move(promise().data);
+            assert(promise().data);
+            return std::move(*promise().data);
         }
     }
 
